@@ -30,6 +30,10 @@ private:
 GameImpl::GameImpl(int nColumns, int nLevels, int N, Player* red, Player* black)
 {
     m_grid = new Scaffold(nColumns, nLevels);
+    if (N < 1) {
+        cerr << "Invalid N" << endl;
+        exit(1);
+    }
     m_N = N;
     Player1 = red;
     Player2 = black;
@@ -187,6 +191,7 @@ bool GameImpl::takeTurn()
  */
 void GameImpl::play()
 {
+    cout << "Game Start:" << endl;
     m_grid->display();
     if (Player1 == nullptr || Player2 == nullptr) {
         return;

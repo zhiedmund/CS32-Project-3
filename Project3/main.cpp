@@ -128,32 +128,25 @@ void outOfBoundsTest() {
 
 int main()
 {
-    doScaffoldTests();
-    doPlayerTests();
-//    doGameTests();
-    playerTests2();
-    dynamicAllocationTests();
-    cerr << "Passed all tests" << endl;
-    chooseMoveTest();
-    
-//    BadPlayer bp("Homer");
-//    HumanPlayer hp("Marge");
-//    Game g(4, 3, 3, &bp, &hp);
-//    g.play();
-//
-
-//    outOfBoundsTest();
-    cerr << "Passed all tests" << endl;
-//	string name;
-//	cout << "What's your name?  ";
-//	getline(cin, name);
-//    HumanPlayer hp(name);
-//	SmartPlayer sp("Computer");
-//	Game g1(7, 6, 4, &hp, &sp);
-//	g1.play();
-//	cout << endl << "This time I'll go first." << endl;
-//	Game g2(4, 3, 3, &sp, &hp);
-//	g2.play();
+//    doScaffoldTests();
+//    doPlayerTests();
+////    doGameTests();
+//    playerTests2();
+//    dynamicAllocationTests();
+//    chooseMoveTest();
+////
+////    outOfBoundsTest();
+//    cerr << "Passed all tests" << endl;
+	string name;
+	cout << "What's your name?  ";
+	getline(cin, name);
+    HumanPlayer hp(name);
+	SmartPlayer sp("Computer");
+	Game g1(4, 3, 3, &hp, &sp);
+	g1.play();
+	cout << endl << "This time I'll go first." << endl;
+	Game g2(4, 3, 3, &sp, &hp);
+	g2.play();
 }
 
     
