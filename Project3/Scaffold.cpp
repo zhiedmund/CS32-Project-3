@@ -10,6 +10,7 @@ class ScaffoldImpl
   public:
     ScaffoldImpl(int nColumns, int nLevels); 
     ~ScaffoldImpl();
+    ScaffoldImpl &operator=(const ScaffoldImpl& rhs);
     ScaffoldImpl(const ScaffoldImpl& other);
     int cols() const;
     int levels() const;
@@ -26,9 +27,15 @@ private:
     stack<int> colStack;
     stack<int> rowStack;
 };
-
+/*
+ Construct a Scaffold with the indicated number of columns and levels. If either is not positive, you may terminate the program after writing a message to cerr.
+ */
 ScaffoldImpl::ScaffoldImpl(int nColumns, int nLevels)
 {
+    if (nColumns < 1 ||  nLevels < 1 ) {
+        cerr << "Invalid Dimensions" << endl;
+        exit(1);
+    }
     m_col = nColumns;
     m_levels = nLevels;
     // initializes dynamically allocated 2D array
@@ -69,6 +76,31 @@ ScaffoldImpl::~ScaffoldImpl() {
 }
 
 
+ScaffoldImpl&ScaffoldImpl::operator=(const ScaffoldImpl& rhs) {
+    // deletes what we currently have
+    for (int i = 0; i < m_levels; i++) {
+        delete m_grid[i];
+    }
+    delete m_grid;
+    // allocates a new array
+    m_col = rhs.m_col;
+    m_levels = rhs.m_levels;
+    m_empty = rhs.m_empty;
+    colStack = rhs.colStack;
+    rowStack = rhs.rowStack;
+    m_grid = new int*[m_levels];
+    for (int i = 0; i < m_levels; i++) {
+        m_grid[i] = new int[m_col];
+    }
+    for (int i = 0; i < m_levels; i++) {
+        for (int j = 0; j < m_col; j++) {
+            m_grid[i][j] = rhs.m_grid[i][j];
+        }
+    }
+    return *this;
+}
+
+
 int ScaffoldImpl::cols() const
 {
     return m_col;
@@ -84,23 +116,15 @@ int ScaffoldImpl::numberEmpty() const
     return m_empty;
 }
 
+/*
+ If there is a red checker at the indicated column and level, return RED; if there's a black checker there, return BLACK; otherwise, return VACANT.
+ */
 int ScaffoldImpl::checkerAt(int column, int level) const
 {
-    if (level > m_levels) {
-        cout << level << endl;
-        cout << m_levels << endl;
-        cerr << "Upper Bound Level Error" << endl;
-        return VACANT; // error
+    if (level > m_levels || column > m_col || level < 1 || column < 1) {
+        cerr << "Out of bounds" << endl;
+        return VACANT; // out of bounds error
     }
-    if (column > m_col) {
-        cerr << "Upper Bound Column Error" << endl;
-        return VACANT; // error
-    }
-    if (level < 1 || column < 1) {
-        cerr << "Lower Bound Error" << endl;
-        return VACANT; // error
-    }
-
     if (m_grid[level-1][column-1] == RED) {
         return RED;
     }
@@ -110,9 +134,9 @@ int ScaffoldImpl::checkerAt(int column, int level) const
     else {
         return VACANT;  //  This is not always correct; it's just here to compile
     }
+    
 }
    
-
 void ScaffoldImpl::display() const
 {
     for(int i = m_levels-1; i >= 0; i--) {
@@ -139,6 +163,7 @@ void ScaffoldImpl::display() const
 //If the first parameter is a valid column number with at least one vacant position in that column, and if color is RED or BLACK, drop a checker of the appropriate color into that column and return true. Otherwise, do nothing and return false.
 bool ScaffoldImpl::makeMove(int column, int color)
 {
+    // check validity
     if (column > m_col && column <= 0 && (color != RED && color != BLACK)) {
         return false;
     }

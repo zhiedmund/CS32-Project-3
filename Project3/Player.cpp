@@ -30,29 +30,35 @@ private:
     AlarmClock* ac;
 };
 
+/*
+ A HumanPlayer chooses its move by prompting a person running the program for a move (reprompting if necessary until the person enters a valid move), and returning that choice. You may assume that the user will enter an integer when prompted for a column number, although it might not be within the range of valid column numbers. (In other words, we won't test HumanPlayer by providing input that is not an integer when an integer is required. The techniques for dealing with the issue completely correctly are a distraction to this project.
+ */
 int HumanPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 {
-    int goal = N; // avoids error messages on linux server
     if(s.numberEmpty() == 0) {
         return 0;
     }
+    if (N > s.cols() && N > s.levels()) {
+        cerr << "Invalid N" << endl;
+        exit(1);
+    }
+    if (color != RED && color != BLACK) {
+        cerr << "Invalid Color" << endl;
+        exit(1);
+    }
     cout << "Choose a column to play" << endl;
+    bool valid = false;
     int column = 0;
-    cin >> column;
-    cin.ignore(10000, '\n');
-    if (column > s.cols()) {
-        return 0; // invalid column number!
+    while (!valid) {
+        cin >> column;
+        cin.ignore(10000, '\n');
+        if (column > s.cols() || column < 1 || s.checkerAt(column, s.levels()) != VACANT) { // if input is out of bounds or there is no available position in the column
+            cout << "Invalid column, please try again" << endl;
+        }
+        else {
+            valid = true;
+        }
     }
-    // checks if there is at least one vacant spot in that column
-    if (s.checkerAt(column, s.levels()) == VACANT) {
-       return column;
-    }
-    else {
-       return 0;
-    }
-    /*
-     A HumanPlayer chooses its move by prompting a person running the program for a move (reprompting if necessary until the person enters a valid move), and returning that choice. You may assume that the user will enter an integer when prompted for a column number, although it might not be within the range of valid column numbers. (In other words, we won't test HumanPlayer by providing input that is not an integer when an integer is required. The techniques for dealing with the issue completely correctly are a distraction to this project.
-     */
     return column;
 }
 
@@ -62,31 +68,30 @@ int HumanPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 int BadPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 {
     if(s.numberEmpty() == 0) {
-        return 0;
+        return 0; // board is full, no move to be made
+    }
+    if (N > s.cols() && N > s.levels()) {
+        cerr << "Invalid N" << endl;
+        exit(1);
+    }
+    if (color != RED && color != BLACK) {
+        cerr << "Invalid Color" << endl;
+        exit(1);
     }
     // i is the column
     for (int i = 1; i <= s.cols(); i++) {
         for (int j = s.levels(); j > 0; j--) {
             if (s.checkerAt(i, j) == VACANT) {
+                // returns the leftmost non-full column
                 return i;
             }
         }
     }
-    return 0;  //  This is not always correct; it's just here to compile
+    return 0; // no move to be made
 }
 
 
-bool SmartPlayerImpl::hasWon(const Scaffold& s, int N, int col, int level) { // returns who wins
-//    int color = VACANT; // color who just made the last move
-//    int i, j; // temporary variables
-//    int level; // level of the grid we are checking, always start at 1, the top
-//    for (level = s.levels(); level >= 1; level--) {
-//        if (s.checkerAt(col, level) != VACANT) {
-//            // topmost piece in that column
-//            color = s.checkerAt(col, level);
-//            break;
-//        }
-//    }
+bool SmartPlayerImpl::hasWon(const Scaffold& s, int N, int col, int level) { // checks who wins
     int color = s.checkerAt(col, level); // color at location we are checking
     int counter = 1; // how many are in a row is at least 1
     // check the horizontals
@@ -169,7 +174,7 @@ bool SmartPlayerImpl::hasWon(const Scaffold& s, int N, int col, int level) { // 
     if (counter >= N) {
         return true;
     }
-    return false;
+    return false; // no N in a row found
 }
 
 int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth, int& col) {
@@ -237,9 +242,9 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
 //    }
 //    if (depth == 1)  {
 //        for (int i = 0;  i < ratings.size(); i++) {
-//            cout << ratings[i] << " ";
+//            cerr << ratings[i] << " ";
 //        }
-//        cout << endl;
+//        cerr << endl;
 //    }
 //    if (mostPositive > 0) {
 //        return mostPositive;
@@ -259,7 +264,15 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
 int SmartPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 {
     // sets the next available level in each column to be the lowest one in each column
-    ac = new AlarmClock(9000);
+    ac = new AlarmClock(9900);
+    if (N > s.cols() && N > s.levels()) {
+        cerr << "Invalid N" << endl;
+        exit(1);
+    }
+    if (color != RED && color != BLACK) {
+        cerr << "Invalid Color" << endl;
+        exit(1);
+    }
     nextAvailableLevel.resize(s.cols());
     int j;
     for (int i = 0; i < nextAvailableLevel.size(); i++) {
@@ -275,22 +288,9 @@ int SmartPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
     int col = 1; // to be returned
     determineBestMove(temp, N, color, 1, col); // rating of a pathway
     if(ac->timedOut()) {
-        cout << "Timed out!" << endl;
+        cerr << "Timed out!" << endl;
     }
     return col;
-    /*
-     determineBestHumanMove():
-     The determineBestHumanMove function iterates through all possible moves that the human can make in response to the last computer trial move.
-     For each possible move the human could make (remember, this is a simulated move that the computer is trying out, not a real human player move), the function will:
-     Make the move (updating the scaffold appropriately with the new checker)
-     Use the rating function to rate the resulting scaffold after the move has been made (to see if the human would have just won, it's a tie, etc.).
-     If the rating function indicates that the user just won or the move resulted in a tie, then remember the result of this move (e.g., store each evaluation in a collection for later). Otherwise, call the determineBestComputerMove function (shown above) on the current scaffold and get its return value. Then record the return value of determineBestComputerMove (e.g., store each evaluation in a collection for later).
-     Undo the current trial move (removing the checker from the scaffold appropriately)
-     The determineBestHumanMove function will then chose the move that results in the scaffold with the minimum value (i.e. a value of −1, if possible, indicating a win for the human player). If there is more than one possible move with the highest rating, then the function can choose whichever of these moves is most convenient. Notice that while the computer function always wants to choose the move with the highest value, the human function wants to choose the move with the lowest value, which indicates a win for the human, rather than the computer.
-     The function then returns two numbers: (a) one indicating which move would likely be made on behalf of the human, and (b) a number (1, 0, or −1) that indicates the worst possible scaffold score (from the computer's perspective) that the suggested move will eventually result in (since that's what the player would try to do).
-     */
-    
-    return 0;  //  This is not always correct; it's just here to compile
 }
 
 //******************** Player derived class functions *************************

@@ -10,6 +10,8 @@ class GameImpl
   public:
     GameImpl(int nColumns, int nLevels, int N, Player* red, Player* black);
     ~GameImpl();
+    GameImpl &operator=(const GameImpl& rhs);
+    GameImpl(const GameImpl& other);
     bool completed(int& winner) const; 
     bool takeTurn(); 
     void play(); 
@@ -36,6 +38,23 @@ GameImpl::GameImpl(int nColumns, int nLevels, int N, Player* red, Player* black)
 
 GameImpl::~GameImpl() {
     delete m_grid;
+}
+
+GameImpl&GameImpl::operator=(const GameImpl& rhs) {
+    delete m_grid;
+    m_grid = new Scaffold(rhs.m_grid->cols(), rhs.m_grid->levels());
+    m_N = rhs.m_N;
+    Player1 = rhs.Player1;
+    Player2 = rhs.Player2;
+    currentPlayer = rhs.currentPlayer;
+    return *this;
+}
+GameImpl::GameImpl(const GameImpl& other) {
+    m_grid = new Scaffold(other.m_grid->cols(), other.m_grid->levels());
+    m_N = other.m_N;
+    Player1 = other.Player1;
+    Player2 = other.Player2;
+    currentPlayer = other.currentPlayer;
 }
 
 /*
@@ -151,11 +170,12 @@ bool GameImpl::takeTurn()
         return false;
     }
     if (currentPlayer == Player1) {
+        cout << "It is " << Player1->name()  << "'s turn" << endl;
         m_grid->makeMove(Player1->chooseMove(*m_grid, m_N, RED), RED);
         currentPlayer = Player2;
     }
-    // error here on 3rd move
     else if (currentPlayer == Player2) {
+        cout << "It is " << Player2->name()  << "'s turn" << endl;
         m_grid->makeMove(Player2->chooseMove(*m_grid, m_N, BLACK), BLACK);
         currentPlayer = Player1;
     }
@@ -164,7 +184,6 @@ bool GameImpl::takeTurn()
 
 /*
  Play the game. Display the progress of the game in a manner of your choosing, provided that someone looking at the screen can follow what's happening. If neither player is interactive, then to keep the display from quickly scrolling through the whole game, it would be reasonable periodically to prompt the viewer to press ENTER to continue and not proceed until ENTER is pressed. (The ignore member function for input streams is useful here.) Announce the winner at the end of the game.
-
  */
 void GameImpl::play()
 {
@@ -176,7 +195,7 @@ void GameImpl::play()
     while(!completed(winner)) {
         takeTurn();
         m_grid->display();
-        cout << "Press enter to continue.";
+        cout << "Press ENTER to continue.";
         cin.ignore(10000,'\n');
     }
     m_grid->display();
@@ -190,7 +209,7 @@ void GameImpl::play()
         cout << "Tie game" << endl;
     }
     else {
-        cout << "Error somewhere" << endl;
+        cerr << "Error somewhere" << endl;
     }
 }
 

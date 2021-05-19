@@ -80,39 +80,80 @@ void playerTests2() {
     Scaffold s1(3, 5);
     SmartPlayer sp1("Computer");
     sp1.chooseMove(s1, 5, RED);
+    cout << "Done" << endl;
     Scaffold s2(4, 4);
     sp1.chooseMove(s2, 3, RED);
+    cout << "Done" << endl;
     Scaffold s3(5, 3);
     sp1.chooseMove(s3, 2, RED);
+    cout << "Done" << endl;
     Scaffold s4(5, 2);
     sp1.chooseMove(s4, 5, RED);
+    cout << "Done" << endl;
     Scaffold s5(6, 2);
     sp1.chooseMove(s5, 3, RED);
+    cout << "Done" << endl;
     Scaffold s6(10, 2);
     sp1.chooseMove(s6, 2, RED);
+    cout << "Done" << endl;
     Scaffold s7(10, 1);
     sp1.chooseMove(s7, 4, RED);
+    cout << "Done" << endl;
+}
+
+void dynamicAllocationTests() {
+    Scaffold s1(4,4); //tests constructor
+    s1.makeMove(1, RED);
+    Scaffold s2(1,1);
+    s2 = s1; //tests assignment operator
+    assert(s1.numberEmpty() == s2.numberEmpty());
+    Scaffold s3(s2);
+    assert(s1.numberEmpty() == 15);
+    assert(s3.numberEmpty() == 15);  //checks copy constructor for single node
+}
+
+void chooseMoveTest() {
+    Scaffold s(7,6);
+    SmartPlayer sp("Computer");
+    cout << "Timer start" << endl;
+    sp.chooseMove(s, 4, RED);
+    cout << "Timer end" << endl;
+}
+
+void outOfBoundsTest() {
+    Scaffold s(3,3);
+    SmartPlayer sp("Computer");
+    sp.chooseMove(s, 4, RED);
 }
 
 int main()
 {
 //    doScaffoldTests();
 //    doPlayerTests();
-//    doGameTests();
-    playerTests2();
+////    doGameTests();
+//    playerTests2();
+//    dynamicAllocationTests();
+//    cerr << "Passed all tests" << endl;
+    
+    
+//    BadPlayer bp("Homer");
+//    HumanPlayer hp("Marge");
+//    Game g(4, 3, 3, &bp, &hp);
+//    g.play();
+//
+//    chooseMoveTest();
+    outOfBoundsTest();
     cerr << "Passed all tests" << endl;
-    
-    
 //	string name;
 //	cout << "What's your name?  ";
 //	getline(cin, name);
-    SmartPlayer sp2("Computer2");
-	SmartPlayer sp("Computer");
-	Game g1(8, 7, 4, &sp, &sp2);
-	g1.play();
-	cout << endl << "This time I'll go first." << endl;
-	Game g2(4, 3, 3, &sp2, &sp);
-	g2.play();
+//    HumanPlayer hp(name);
+//	SmartPlayer sp("Computer");
+//	Game g1(7, 6, 4, &hp, &sp);
+//	g1.play();
+//	cout << endl << "This time I'll go first." << endl;
+//	Game g2(4, 3, 3, &sp, &hp);
+//	g2.play();
 }
 
     
