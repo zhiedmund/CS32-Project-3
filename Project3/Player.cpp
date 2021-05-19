@@ -32,6 +32,7 @@ private:
 
 int HumanPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 {
+    int goal = N; // avoids error messages on linux server
     if(s.numberEmpty() == 0) {
         return 0;
     }
