@@ -24,10 +24,9 @@ class SmartPlayerImpl
   public:
     int chooseMove(const Scaffold& s, int N, int color);
 private:
-    int determineBestMove(Scaffold&s, int N, int color, int depth, int& col);
+    int determineBestMove(AlarmClock &ac, Scaffold&s, int N, int color, int depth, int& col);
     bool hasWon(const Scaffold& s, int N, int col, int level);
     vector<int> nextAvailableLevel;
-    AlarmClock* ac;
 };
 
 /*
@@ -177,7 +176,7 @@ bool SmartPlayerImpl::hasWon(const Scaffold& s, int N, int col, int level) { // 
     return false; // no N in a row found
 }
 
-int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth, int& col) {
+int SmartPlayerImpl::determineBestMove(AlarmClock& ac, Scaffold& s, int N, int color, int depth, int& col) {
     // keeps track of ratings
 //    vector<int> ratings(s.cols());
     int rating;
@@ -186,7 +185,7 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
     int mostPositive = -BIGNUMBER;
     for (int i = 1; i <= s.cols(); i++) {
         // if there are vacant spots in the column
-        if (nextAvailableLevel[i-1] <= s.levels() && !ac->timedOut()) {
+        if (nextAvailableLevel[i-1] <= s.levels() && !ac.timedOut()) {
             // make a move
             s.makeMove(i, color);
             if (hasWon(s, N, i, nextAvailableLevel[i-1])) {
@@ -202,7 +201,7 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
                     // negative because we changed color
                     nextAvailableLevel[i-1]++;
 //                    ratings[i-1] = -(determineBestMove(s, N, (color == RED) ? BLACK : RED, depth + 1, col));
-                    rating = -(determineBestMove(s, N, (color == RED) ? BLACK : RED, depth + 1, col));
+                    rating = -(determineBestMove(ac, s, N, (color == RED) ? BLACK : RED, depth + 1, col));
                     nextAvailableLevel[i-1]--;
                 }
             }
@@ -212,7 +211,7 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
                 col = i;
             }
         }
-        if(ac->timedOut()) {
+        if(ac.timedOut()) {
             return mostPositive;
         }
 //        else {
@@ -264,7 +263,7 @@ int SmartPlayerImpl::determineBestMove(Scaffold& s, int N, int color, int depth,
 int SmartPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
 {
     // sets the next available level in each column to be the lowest one in each column
-    ac = new AlarmClock(9900);
+    AlarmClock ac(9900);
     if (N > s.cols() && N > s.levels()) {
         cerr << "Invalid N" << endl;
         exit(1);
@@ -286,8 +285,8 @@ int SmartPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
     }
     Scaffold temp(s);
     int col = 1; // to be returned
-    determineBestMove(temp, N, color, 1, col); // rating of a pathway
-    if(ac->timedOut()) {
+    determineBestMove(ac, temp, N, color, 1, col); // rating of a pathway
+    if(ac.timedOut()) {
         cerr << "Timed out!" << endl;
     }
     return col;
