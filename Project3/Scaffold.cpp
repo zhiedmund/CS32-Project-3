@@ -72,7 +72,7 @@ ScaffoldImpl::~ScaffoldImpl() {
     for (int i = 0; i < m_levels; i++) {
         delete m_grid[i];
     }
-    delete m_grid;
+    delete [] m_grid;
 }
 
 
@@ -81,7 +81,7 @@ ScaffoldImpl&ScaffoldImpl::operator=(const ScaffoldImpl& rhs) {
     for (int i = 0; i < m_levels; i++) {
         delete m_grid[i];
     }
-    delete m_grid;
+    delete [] m_grid;
     // allocates a new array
     m_col = rhs.m_col;
     m_levels = rhs.m_levels;
