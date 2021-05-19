@@ -99,20 +99,20 @@ int main()
 //    doScaffoldTests();
 //    doPlayerTests();
 //    doGameTests();
-//    playerTests2();
-//    cerr << "Passed all tests" << endl;
+    playerTests2();
+    cerr << "Passed all tests" << endl;
     
     
 //	string name;
 //	cout << "What's your name?  ";
 //	getline(cin, name);
-    SmartPlayer sp2("Computer2");
-	SmartPlayer sp("Computer");
-	Game g1(8, 7, 4, &sp, &sp2);
-	g1.play();
-	cout << endl << "This time I'll go first." << endl;
-	Game g2(4, 3, 3, &sp2, &sp);
-	g2.play();
+//    SmartPlayer sp2("Computer2");
+//	SmartPlayer sp("Computer");
+//	Game g1(8, 7, 4, &sp, &sp2);
+//	g1.play();
+//	cout << endl << "This time I'll go first." << endl;
+//	Game g2(4, 3, 3, &sp2, &sp);
+//	g2.play();
 }
 
     

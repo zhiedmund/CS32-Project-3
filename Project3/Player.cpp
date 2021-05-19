@@ -276,7 +276,6 @@ int SmartPlayerImpl::chooseMove(const Scaffold& s, int N, int color)
     if(ac->timedOut()) {
         cout << "Timed out!" << endl;
     }
-    delete ac;
     return col;
     /*
      determineBestHumanMove():
