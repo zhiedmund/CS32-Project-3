@@ -123,13 +123,13 @@ void chooseMoveTest() {
 
 int main()
 {
-//    doScaffoldTests();
-//    doPlayerTests();
-////    doGameTests();
+    doScaffoldTests();
+    doPlayerTests();
+    doGameTests();
     playerTests2();
-//    dynamicAllocationTests();
-//    chooseMoveTest();
-//
+    dynamicAllocationTests();
+    chooseMoveTest();
+
 
     cerr << "Passed all tests" << endl;
 //	string name;
