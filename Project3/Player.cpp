@@ -6,6 +6,8 @@
 #include <iostream>
 using namespace std;
 
+const int BIGNUMBER = 999999;
+
 class HumanPlayerImpl
 {
   public:

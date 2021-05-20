@@ -169,6 +169,9 @@ bool GameImpl::completed(int& winner) const
  */
 bool GameImpl::takeTurn()
 {
+    if (Player1 == nullptr || Player2 == nullptr) {
+        return false;
+    }
     int winner;
     if (completed(winner)) {
         return false;

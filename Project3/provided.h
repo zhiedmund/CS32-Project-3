@@ -7,7 +7,7 @@ const int VACANT = -1;
 const int RED = 0;
 const int BLACK = 1;
 const int TIE_GAME = -1;
-const int BIGNUMBER = 999999;
+
 
 class ScaffoldImpl;
 

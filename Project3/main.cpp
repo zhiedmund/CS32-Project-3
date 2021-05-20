@@ -79,6 +79,7 @@ void doGameTests()
 void playerTests2() {
     Scaffold s1(3, 5);
     SmartPlayer sp1("Computer");
+    cout << "Timer start" << endl;
     sp1.chooseMove(s1, 5, RED);
     cout << "Done" << endl;
     Scaffold s2(4, 4);
@@ -120,33 +121,27 @@ void chooseMoveTest() {
     cout << "Timer end" << endl;
 }
 
-void outOfBoundsTest() {
-    Scaffold s(3,3);
-    SmartPlayer sp("Computer");
-    sp.chooseMove(s, 4, RED);
-}
-
 int main()
 {
 //    doScaffoldTests();
 //    doPlayerTests();
 ////    doGameTests();
-//    playerTests2();
+    playerTests2();
 //    dynamicAllocationTests();
 //    chooseMoveTest();
-////
-////    outOfBoundsTest();
-//    cerr << "Passed all tests" << endl;
-	string name;
-	cout << "What's your name?  ";
-	getline(cin, name);
-    HumanPlayer hp(name);
-	SmartPlayer sp("Computer");
-	Game g1(4, 3, 3, &hp, &sp);
-	g1.play();
-	cout << endl << "This time I'll go first." << endl;
-	Game g2(4, 3, 3, &sp, &hp);
-	g2.play();
+//
+
+    cerr << "Passed all tests" << endl;
+//	string name;
+//	cout << "What's your name?  ";
+//	getline(cin, name);
+//    HumanPlayer hp(name);
+//	SmartPlayer sp("Computer");
+//	Game g1(4, 3, 3, &hp, &sp);
+//	g1.play();
+//	cout << endl << "This time I'll go first." << endl;
+//	Game g2(4, 3, 3, &sp, &hp);
+//	g2.play();
 }
 
     
